@@ -1,0 +1,46 @@
+name: Deploy to EKS
+on:
+  push:
+    branches: [ main ]
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      AWS_REGION:     ${{ secrets.AWS_REGION }}
+      AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region:     ${{ env.AWS_REGION }}
+
+      - name: Login to ECR
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build, tag & push images
+        run: |
+          SERVICES=(api-gateway product-service order-service inventory-service)
+          for S in "${SERVICES[@]}"; do
+            docker build -t $S ./$S
+            docker tag $S:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$S:latest
+            docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$S:latest
+          done
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v4
+
+      - name: Update kubeconfig & deploy
+        run: |
+          aws eks update-kubeconfig --name springboot-microservices --region $AWS_REGION
+          # recursively apply everything under k8s/, skipping client‐side validation
+          kubectl apply --validate=false -R -f k8s/
+
