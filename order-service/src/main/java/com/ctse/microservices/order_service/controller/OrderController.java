@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 //This is the order service controller
 
-@RestController // Marks this class as a REST controller
+@RestController
 @RequestMapping("/api/orders")
 public class OrderController {
 
@@ -22,13 +22,7 @@ public class OrderController {
         this.service = service;
     }
 
-    /**
-     * Endpoint to place a new order.
-     * Receives an Order object in the request body and processes it via the service layer.
-     *
-     * @param order Order object received from the client
-     * @return ResponseEntity with a success message
-     */
+
     @PostMapping
     public ResponseEntity<String> placeOrder(@RequestBody Order order) {
         service.placeOrder(order); // Delegates order processing to the service layer
