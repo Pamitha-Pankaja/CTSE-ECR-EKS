@@ -42,7 +42,15 @@ jobs:
         run: |
           aws eks update-kubeconfig --name springboot-microservices --region $AWS_REGION
           # recursively apply everything under k8s/, skipping client‐side validation
-          kubectl apply --validate=false -R -f k8s/
+          kubectl apply -R -f k8s/
+          # Force-restart pods to make sure the new image tag is pulled
+          kubectl rollout restart deployment/api-gateway
+          kubectl rollout restart deployment/product-service
+          kubectl rollout restart deployment/order-service
+          kubectl rollout restart deployment/inventory-service
+
+
+
 
 
 
