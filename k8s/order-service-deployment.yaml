@@ -10,7 +10,7 @@ spec:
     spec:
       containers:
         - name: order-service
-          image: 630288222109.dkr.ecr.us-east-1.amazonaws.com/order-service:latest
+          image: 058264535361.dkr.ecr.us-east-1.amazonaws.com/order-service:latest
           ports:
             - containerPort: 8083
           env:
