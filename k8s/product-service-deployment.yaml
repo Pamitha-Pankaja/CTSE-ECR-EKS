@@ -1,9 +1,9 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: Deployment # Deployment YAML
 metadata:
   name: product-service
 spec:
-  replicas: 2
+  replicas: 2 # Number of pod replicas to run for high availability
   selector: { matchLabels: { app: product-service }}
   template:
     metadata: { labels: { app: product-service }}
