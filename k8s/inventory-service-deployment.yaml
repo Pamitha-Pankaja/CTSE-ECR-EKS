@@ -20,3 +20,4 @@ spec:
                   name: inventory-service-secrets
                   key: SPRING_DATA_MONGODB_URI
           imagePullPolicy: Always
+          
