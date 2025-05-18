@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+//this is the product service
 @Service
 public class ProductService {
 
